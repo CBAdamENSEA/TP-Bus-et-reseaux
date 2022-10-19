@@ -53,14 +53,16 @@ typedef struct BMP280{
 	uint8_t temperature_oversampling;
 } BMP280;
 
-
+typedef uint32_t BMP280_U32_t;
+typedef int32_t BMP280_S32_t;
 
 uint8_t BMP_Read_Register_ID();
 char BMP_Verify_Id();
 void BMP_Config(BMP280 bmp);
 void Calibration(uint8_t calibration_data[Calibration_size]);
 void Read_Temp_Press(BMP280 bmp);
-uint8_t Resolution(uint8_t oversampling);
+BMP280_S32_t bmp280_compensate_T_int32(BMP280_S32_t adc_T);
+BMP280_U32_t bmp280_compensate_P_int32(BMP280_S32_t adc_P);
 
 
 
