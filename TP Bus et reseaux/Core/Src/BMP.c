@@ -35,13 +35,13 @@ uint8_t BMP_Read_Register_ID()
 		}
 		else
 		{
-			printf("Receive Error\n\r");
+			printf("Receive Error\r\n");
 			return 0;
 		}
 	}
 	else
 	{
-		printf("Transmit Error\n\r");
+		printf("Transmit Error\r\n");
 		return 0;
 	}
 	return RX_Data;
@@ -49,14 +49,14 @@ uint8_t BMP_Read_Register_ID()
 
 char BMP_Verify_Id()
 {
-	if (BMP_Read_Register_ID()==0x58)
+	if (BMP_Read_Register_ID()==BMP_ID_VAL)
 	{
-		printf("The sensor used is BMP-280\n\r");
+		printf("The sensor used is BMP-280\r\n");
 		return 1;
 	}
 	else
 	{
-		printf("The sensor used is not BMP-280\n\r");
+		printf("The sensor used is not BMP-280\r\n");
 		return 0;
 	}
 }
@@ -64,8 +64,6 @@ char BMP_Verify_Id()
 
 // Returns temperature in DegC, resolution is 0.01 DegC. Output value of “5123” equals 51.23 DegC.
 // t_fine carries fine temperature as global value
-
-
 
 BMP280_S32_t bmp280_compensate_T_int32(BMP280_S32_t adc_T)
 {
@@ -122,25 +120,38 @@ void BMP_Config(BMP280 bmp)
 			{
 				if ((RX_Data & MaskMode==bmp.mode)&(((RX_Data&MaskOsrsP)>>2)==bmp.pressure_oversampling)&(((RX_Data&MaskOsrsT)>>5)==bmp.temperature_oversampling))
 				{
-					printf("BMP280 is configured successfully\n\r");
+					printf("BMP280 is configured successfully\r\n");
+				}
+				else
+				{
+					printf("BMP280 is not configured successfully\r\n");
 				}
 			}
+			else
+			{
+				printf("Receive Error\r\n");
+			}
+		}
+		else
+		{
+			printf("Transmit Error\r\n");
 		}
 	}
 
 }
 
-void Calibration(uint8_t calibration_data[Calibration_size])
+void Calibration()
 {
 	uint16_t DevAddress=BMP_Addr;
 	uint8_t TX_Data=BMP_Reg_calib;
+	uint8_t calibration_data[Calibration_size];
 	uint8_t* p = calibration_data;
 	int i=0;
 	if (HAL_I2C_Master_Transmit(&hi2c1, DevAddress, &TX_Data, 1, HAL_MAX_DELAY)==HAL_OK)
 	{
 		if(HAL_I2C_Master_Receive(&hi2c1, DevAddress, calibration_data, Calibration_size, HAL_MAX_DELAY)==HAL_OK)
 		{
-			printf("Calibration data received\n\r");
+			printf("Calibration data received\r\n");
 
 			memcpy(&dig_T1, p, 2);
 			p += 2;
@@ -170,14 +181,22 @@ void Calibration(uint8_t calibration_data[Calibration_size])
 			/*
 			for (i=0;i<Calibration_size;i++)
 			{
-				printf("calib %d = 0x%x\n\r",i,calibration_data[i]);
+				printf("calib %d = 0x%x\r\n",i,calibration_data[i]);
 			}
 			 */
 
 		}
+		else
+		{
+			printf("Receive Error\r\n");
+		}
+	}
+	else
+	{
+		printf("Transmit Error\r\n");
 	}
 }
-void Read_Temp_Press(BMP280 bmp)
+void Read_Temp_Press()
 {
 	uint16_t DevAddress=BMP_Addr;
 	uint8_t TX_Data=BMP_Reg_DataReadout;
@@ -195,13 +214,79 @@ void Read_Temp_Press(BMP280 bmp)
 			Pressure_value=(RX_Data[0]<<12)+(RX_Data[1]<<4)+(RX_Data[2]>>4);
 			Temperature_value=(RX_Data[0+3]<<12)+(RX_Data[1+3]<<4)+(RX_Data[2+3]>>4);
 
-			printf("Pressure value = 0x%x\n\r",Pressure_value);
-			printf("Temperature value = 0x%x\n\r",Temperature_value);
+			printf("Pressure value = 0x%x\r\n",Pressure_value);
+			printf("Temperature value = 0x%x\r\n",Temperature_value);
 			Pressure_value_compensated=bmp280_compensate_P_int32(Pressure_value);
 			Temperature_value_compensated=bmp280_compensate_T_int32(Temperature_value);
-			printf("Pressure value compensated = %d.%d hPa\n\r",(int)(Pressure_value_compensated/100),(Pressure_value_compensated%100));
-			printf("Temperature value compensated = %d.%d C\n\r",(int)(Temperature_value_compensated/100),Temperature_value_compensated%100);
+			printf("Pressure value compensated = %d Pa\r\n",Pressure_value_compensated);
+			printf("Temperature value compensated = %d.%d C\r\n",(int)(Temperature_value_compensated/100),Temperature_value_compensated%100);
 		}
+		else
+		{
+			printf("Receive Error\r\n");
+		}
+	}
+	else
+	{
+		printf("Transmit Error\r\n");
+	}
+}
+
+BMP280_U32_t Read_Press()
+{
+	uint16_t DevAddress=BMP_Addr;
+	uint8_t TX_Data=BMP_Reg_DataReadout;
+	uint8_t RX_Data[PressReadout_size];
+	uint32_t Pressure_value;
+	BMP280_U32_t Pressure_value_compensated;
+
+	if (HAL_I2C_Master_Transmit(&hi2c1, DevAddress, &TX_Data, 1, HAL_MAX_DELAY)==HAL_OK)
+	{
+		if(HAL_I2C_Master_Receive(&hi2c1, DevAddress, RX_Data, PressReadout_size, HAL_MAX_DELAY)==HAL_OK)
+		{
+			Pressure_value=(RX_Data[0]<<12)+(RX_Data[1]<<4)+(RX_Data[2]>>4);
+			Pressure_value_compensated=bmp280_compensate_P_int32(Pressure_value);
+			return Pressure_value_compensated;
+		}
+		else
+		{
+			printf("Receive Error\r\n");
+			return 0;
+		}
+	}
+	else
+	{
+		printf("Transmit Error\r\n");
+		return 0;
+	}
+}
+BMP280_S32_t Read_Temp()
+{
+	uint16_t DevAddress=BMP_Addr;
+	uint8_t TX_Data=BMP_Reg_DataReadout+TempReadout_size; // To read the temperature registers
+	uint8_t RX_Data[TempReadout_size];
+	uint32_t Temperature_value;
+	BMP280_S32_t Temperature_value_compensated;
+
+	if (HAL_I2C_Master_Transmit(&hi2c1, DevAddress, &TX_Data, 1, HAL_MAX_DELAY)==HAL_OK)
+	{
+		if(HAL_I2C_Master_Receive(&hi2c1, DevAddress, RX_Data, TempReadout_size, HAL_MAX_DELAY)==HAL_OK)
+		{
+			Temperature_value=(RX_Data[0]<<12)+(RX_Data[1]<<4)+(RX_Data[2]>>4);
+			Temperature_value_compensated=bmp280_compensate_T_int32(Temperature_value);
+
+			return Temperature_value_compensated;
+		}
+		else
+		{
+			printf("Receive Error\r\n");
+			return 0;
+		}
+	}
+	else
+	{
+		printf("Transmit Error\r\n");
+		return 0;
 	}
 }
 
