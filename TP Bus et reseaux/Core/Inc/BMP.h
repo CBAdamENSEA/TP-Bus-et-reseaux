@@ -12,7 +12,7 @@
 
 
 
-#define BMP_Addr 0x77<<1 //
+#define BMP_Addr 0x77<<1
 
 
 
@@ -21,14 +21,11 @@
 #define BMP_Reg_calib 0x88
 #define BMP_Reg_DataReadout 0xF7
 
-#define BMP_ID_VAL 0x58
 
 
-
-#define Calibration_size 26 //24 because the last two bytes are reserved
+#define Calibration_size 26
 #define DataReadout_size 6
-#define TempReadout_size 3
-#define PressReadout_size 3
+
 
 
 
@@ -62,13 +59,10 @@ typedef int32_t BMP280_S32_t;
 uint8_t BMP_Read_Register_ID();
 char BMP_Verify_Id();
 void BMP_Config(BMP280 bmp);
-void Calibration();
+void Calibration(uint8_t calibration_data[Calibration_size]);
+void Read_Temp_Press(BMP280 bmp);
 BMP280_S32_t bmp280_compensate_T_int32(BMP280_S32_t adc_T);
 BMP280_U32_t bmp280_compensate_P_int32(BMP280_S32_t adc_P);
-void Read_Temp_Press();
-BMP280_U32_t Read_Press();
-BMP280_S32_t Read_Temp();
-
 
 
 
