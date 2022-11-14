@@ -19,7 +19,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "can.h"
+#include "dma.h"
 #include "i2c.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -27,6 +29,7 @@
 /* USER CODE BEGIN Includes */
 #include "BMP.h"
 #include "string.h"
+#include "uart_protocol.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,7 +49,19 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+extern UART_HandleTypeDef huart2;
+extern UART_HandleTypeDef huart3;
+extern DMA_HandleTypeDef hdma_usart2_rx;
+extern DMA_HandleTypeDef hdma_usart3_rx;
+extern CAN_HandleTypeDef hcan1;
+extern TIM_HandleTypeDef htim7;
+
+CAN_TxHeaderTypeDef pHeader;
+uint32_t pTxMailbox;
+uint8_t aData[2];
 char BMP280_test=0;
+int angle=0;
+
 uint8_t calibration_data[Calibration_size];
 BMP280_S32_t t_fine;
 uint16_t dig_T1;
@@ -61,7 +76,12 @@ int16_t dig_P6;
 int16_t dig_P7;
 int16_t dig_P8;
 int16_t dig_P9;
-
+int K=1234;
+int A=1257;
+uint8_t RxChar;
+uint8_t RxBuffer[RX_BUFFER_SIZE];
+int temp_to_angle=100;
+BMP280_S32_t temp_v;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,8 +126,46 @@ int main(void)
   MX_I2C1_Init();
   MX_CAN1_Init();
   MX_USART2_UART_Init();
+  MX_DMA_Init();
   MX_USART3_UART_Init();
+  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
+
+
+
+	HAL_CAN_Start(&hcan1);
+
+
+	HAL_Delay(10000);
+
+	aData[0]=0;
+	aData[1]=0;
+	pHeader.StdId= 0x62;
+	pHeader.IDE=CAN_ID_STD;
+	pHeader.RTR=CAN_RTR_DATA;
+	pHeader.DLC=0;
+	pHeader.TransmitGlobalTime=DISABLE;
+	HAL_CAN_AddTxMessage ( &hcan1, &pHeader,aData,&pTxMailbox);
+
+
+	aData[0]=90;
+	aData[1]=0;
+	pHeader.StdId= 0x61;
+	pHeader.IDE=CAN_ID_STD;
+	pHeader.RTR=CAN_RTR_DATA;
+	pHeader.DLC=2;
+	pHeader.TransmitGlobalTime=DISABLE;
+
+
+
+
+
+
+	HAL_CAN_AddTxMessage ( &hcan1, &pHeader,aData,&pTxMailbox);
+	HAL_TIM_Base_Start_IT(&htim7);
+
+	HAL_UARTEx_ReceiveToIdle_DMA(&huart3, RxBuffer, RX_BUFFER_SIZE);
+	__HAL_DMA_DISABLE_IT(&hdma_usart3_rx, DMA_IT_HT);
 	BMP280 bmp;
 	bmp.mode=MODE_NORMAL;
 	bmp.pressure_oversampling=OverSampling16;
@@ -123,14 +181,15 @@ int main(void)
 	}
 
 
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	while (1)
 	{
-		Read_Temp_Press(bmp);
-		HAL_Delay(1000);
+		//Read_Temp_Press(bmp);
+		//HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -184,7 +243,38 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+{
+	if (huart->Instance == USART3)
+	{
+		RxBuffer[Size]='\r';
+		RxBuffer[Size+1]='\n';
+		protocol(RxBuffer,Size+2);
+		HAL_UARTEx_ReceiveToIdle_DMA(&huart3, RxBuffer, RX_BUFFER_SIZE);
+		__HAL_DMA_DISABLE_IT(&hdma_usart3_rx, DMA_IT_HT);
+	}
+}
 
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	temp_v=Read_Temp();
+	printf("T=%d\r\n",temp_v);
+	angle=(abs(temp_v-2500)/temp_to_angle)*10;
+	printf("angle=%d\r\n",angle);
+	if(temp_v>=2500)
+	{
+		aData[1]=0;
+	}
+	else
+	{
+		aData[1]=1;
+	}
+	aData[0]=angle;
+	if(HAL_CAN_AddTxMessage( &hcan1, &pHeader,aData,&pTxMailbox)==HAL_OK)
+	{
+		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+	}
+}
 /* USER CODE END 4 */
 
 /**

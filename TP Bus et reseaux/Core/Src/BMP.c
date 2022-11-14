@@ -140,7 +140,7 @@ void Calibration(uint8_t calibration_data[Calibration_size])
 	{
 		if(HAL_I2C_Master_Receive(&hi2c1, DevAddress, calibration_data, Calibration_size, HAL_MAX_DELAY)==HAL_OK)
 		{
-			printf("Calibration data received\n\r");
+			printf("Calibration data received\r\n");
 
 			memcpy(&dig_T1, p, 2);
 			p += 2;
@@ -205,7 +205,63 @@ void Read_Temp_Press(BMP280 bmp)
 	}
 }
 
+BMP280_U32_t Read_Press()
+{
+	uint16_t DevAddress=BMP_Addr;
+	uint8_t TX_Data=BMP_Reg_DataReadout;
+	uint8_t RX_Data[PressReadout_size];
+	uint32_t Pressure_value;
+	BMP280_U32_t Pressure_value_compensated;
 
+	if (HAL_I2C_Master_Transmit(&hi2c1, DevAddress, &TX_Data, 1, HAL_MAX_DELAY)==HAL_OK)
+	{
+		if(HAL_I2C_Master_Receive(&hi2c1, DevAddress, RX_Data, PressReadout_size, HAL_MAX_DELAY)==HAL_OK)
+		{
+			Pressure_value=(RX_Data[0]<<12)+(RX_Data[1]<<4)+(RX_Data[2]>>4);
+			Pressure_value_compensated=bmp280_compensate_P_int32(Pressure_value);
+			return Pressure_value_compensated;
+		}
+		else
+		{
+			printf("Receive Error\r\n");
+			return 0;
+		}
+	}
+	else
+	{
+		printf("Transmit Error\r\n");
+		return 0;
+	}
+}
+BMP280_S32_t Read_Temp()
+{
+	uint16_t DevAddress=BMP_Addr;
+	uint8_t TX_Data=BMP_Reg_DataReadout+TempReadout_size; // To read the temperature registers
+	uint8_t RX_Data[TempReadout_size];
+	uint32_t Temperature_value;
+	BMP280_S32_t Temperature_value_compensated;
+
+	if (HAL_I2C_Master_Transmit(&hi2c1, DevAddress, &TX_Data, 1, HAL_MAX_DELAY)==HAL_OK)
+	{
+		if(HAL_I2C_Master_Receive(&hi2c1, DevAddress, RX_Data, TempReadout_size, HAL_MAX_DELAY)==HAL_OK)
+		{
+			Temperature_value=(RX_Data[0]<<12)+(RX_Data[1]<<4)+(RX_Data[2]>>4);
+			Temperature_value_compensated=bmp280_compensate_T_int32(Temperature_value);
+
+			return Temperature_value_compensated;
+		}
+		else
+		{
+			printf("Receive Error\r\n");
+			return 0;
+		}
+	}
+	else
+	{
+		printf("Transmit Error\r\n");
+		return 0;
+	}
+}
 
 
 

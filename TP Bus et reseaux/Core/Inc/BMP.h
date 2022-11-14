@@ -25,6 +25,8 @@
 
 #define Calibration_size 26
 #define DataReadout_size 6
+#define TempReadout_size 3
+#define PressReadout_size 3
 
 
 
@@ -63,8 +65,8 @@ void Calibration(uint8_t calibration_data[Calibration_size]);
 void Read_Temp_Press(BMP280 bmp);
 BMP280_S32_t bmp280_compensate_T_int32(BMP280_S32_t adc_T);
 BMP280_U32_t bmp280_compensate_P_int32(BMP280_S32_t adc_P);
-
-
+BMP280_U32_t Read_Press();
+BMP280_S32_t Read_Temp();
 
 
 #endif /* INC_BMP_H_ */
