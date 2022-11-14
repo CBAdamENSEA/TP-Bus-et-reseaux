@@ -67,7 +67,34 @@ Ensuite, Nous avons écrit un code python permettant la récupération des donn�
 
 Développement d'une interface REST sur le Raspberry
 
-###
+### Installation du serveur Python
+
+
+
+### Première page REST avec métodes HTTP
+
+
+
+## TP4: Bus CAN 
+
+### Objectif
+
+Mise en place d'un moteur pas-à-pas sur bus CAN
+
+### Pilotage du moteur
+
+
+
+## TP5: Intégration I²C - Serial - REST - CAN
+
+### Objectif
+
+Faire marcher ensemble les TP 1, 2, 3 et 4
+
+
+
+
+
 
 
 
