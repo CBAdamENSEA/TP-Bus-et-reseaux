@@ -6,7 +6,7 @@
 
 Ce TP consiste à réaliser un système permettant l'accés aux données des capteurs et le pilotage d'actionneur à travers une interface API Rest.
 L'architecture du système:
-![architecture](./media/System_architecture.png)
+![architecture](https://github.com/CBAdamENSEA/TP-Bus-et-reseaux/blob/master/media/System_architecture.PNG)
 L'interrogation des capteurs se fait par le bus I²2C avec la STM32.
 Le pilotage d'actionneur se fait par le bus CAN avec la STM32.
 La Raspberry Pi récupère les données de la STM32 à travers le bus UART.
