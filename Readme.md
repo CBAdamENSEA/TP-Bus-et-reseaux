@@ -9,6 +9,7 @@
 Ce TP consiste à réaliser un système permettant l'accés aux données des capteurs et le pilotage d'actionneur à travers une interface API Rest.
 
 L'architecture du système:
+
 ![architecture](https://github.com/CBAdamENSEA/TP-Bus-et-reseaux/blob/master/media/System_architecture.PNG)
 
 L'interrogation des capteurs se fait par le bus I²2C avec la STM32.
@@ -55,9 +56,18 @@ automatiquement le serveur SSH sur le réseau et pour activer le port série afi
 ### Commande depuis Python
 
 On a commencé par écrire un protocole de communication UART (uart3) sur la STM32 pour gérer les demandes de la Raspberry:
+
 ![architecture](https://github.com/CBAdamENSEA/TP-Bus-et-reseaux/blob/master/media/protocole.PNG)
 
-Ensuite, Nous avons écrit un code python permettant la récupération des données de la STM32. 
+Ensuite, Nous avons écrit un code python permettant la récupération des données de la STM32.
+
+## TP3: Interface REST
+
+### Objectif
+
+Développement d'une interface REST sur le Raspberry
+
+###
 
 
 
