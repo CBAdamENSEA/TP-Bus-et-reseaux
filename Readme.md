@@ -30,15 +30,15 @@ Interfacer un STM32 avec des un capteur I2C (BMP280)
 
 Le BMP280 est un capteur de pression et température développé par Bosch
 
-Tout d'abord, on commence par l'identification du composant (ID = 0x58): 'BMP_Verify_Id()'
+Tout d'abord, on commence par l'identification du composant (ID = 0x58): ('BMP_Verify_Id()')
 
-Ensuite on configure le capteur: mode normal, Pressure oversampling x16, Temperature oversampling x2: 'BMP_Config(bmp)'
+Ensuite on configure le capteur: mode normal, Pressure oversampling x16, Temperature oversampling x2: ('BMP_Config(bmp)')
 
-Après, en effectue le calibrage du composant : 'Calibration(calibration_data)'
+Après, en effectue le calibrage du composant : ('Calibration(calibration_data)')
 
 Enfin, on écrit 2 fonctions distinctes:
-* Une fonction 'Read_Temp()' qui renvoie la valeur de la température compensée en 100°C
-* Une fonction 'Read_Press()' qui renvoie la valeur de la pression compensée en Pa
+* Une fonction ('Read_Temp()') qui renvoie la valeur de la température compensée en 100°C
+* Une fonction ('Read_Press()') qui renvoie la valeur de la pression compensée en Pa
 
 On affiche ces valeurs sur l'ordinateur en rederigeant la fonction printf vers l'UART1 de la STM32.
 
