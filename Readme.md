@@ -53,6 +53,11 @@ Permettre l'interrogation du STM32 via un Raspberry Pi Zero
 Tout d'abord, il faut préparer la Raspberry PI Zéro en modifiant des fichiers dans lA partition bootafin de lancer 
 automatiquement le serveur SSH sur le réseau et pour activer le port série afin d'assurer la connexion avec la STM32.
 
+Il faut installer pip pour python3 avec la commande `sudo apt install python3-pip` et ensuite installer le pack pyserial 
+avec la commande `pip3 install pyserial`
+
+
+
 ### Commande depuis Python
 
 On a commencé par écrire un protocole de communication UART (uart3) sur la STM32 pour gérer les demandes de la Raspberry:
@@ -69,21 +74,54 @@ Développement d'une interface REST sur le Raspberry
 
 ### Installation du serveur Python
 
+Il faut d'abord créer son propre utilisateur avec les droits de sudo et  d'accès au port série (dialout)
 
+`sudo adduser XXX`
+
+`sudo usermod -aG sudo XXX`
+
+`sudo usermod -aG dialout XXX`
+
+Il faut ensuite installer le pack flask avec la commande `pip3 install flask` qui va nous permettre de créer notre page REST
 
 ### Première page REST avec métodes HTTP
 
+Nous avons créé notre serveur web et nous l'avons lancé avec la commande `FLASK_APP=nom_du_programme.py FLASK_ENV=development flask run --host 0.0.0.0`
+
+La constante `FLASK_ENV=development` permet de lancer en mode debug pour permettre de tester le serveur web.
+
+On choisit le format JSON pour les données car il est lisable par un homme ou une machine.
+
+Nous avons ajouté une page d'erreur 404 (html) avec la fonction `render_template('page_not_found.html')`.
+
+Ensuite, nous avons ajouté les méthodes POST, GET, PUT, PATCH et DELETE pour définir les fonctions CRUD.
 
 
 ## TP4: Bus CAN 
 
 ### Objectif
 
-Mise en place d'un moteur pas-à-pas sur bus CAN
+Mise en place d'un moteur pas-à-pas sur bus CAN avec un baud rate de 500kbits/s. Le ratio seg2/(seg1+seg2) détermine 
+l'instant de décision. Il doit être aux alentours de 87%. Nous avons choisi un prescaler de ...
+
+Pour pouvoir utiliser le bus CAN de la STM32, il faut passer par un Tranceiver CAN. Ce composant a été installé sur une carte 
+fille (shield) au format Arduino pour pouvoir le connecter facilement. Ce shield possède un connecteur subd9, qui permet de 
+connecter un câble au format CAN avec le moteur.
+
+Pour activer le module CAN, nous allons utiliser la fonction `HAL_CAN_Start(&hcan1)`
+
+Ensuite pour donner un message: nous allons utiliser la fonction `HAL_CAN_AddTxMessage( &hcan1, &pHeader,aData,&pTxMailbox)`
+
+Le moteur fonctionne en 2 modes: automatique et manuel: 
+
+![architecture](https://github.com/CBAdamENSEA/TP-Bus-et-reseaux/blob/master/media/moteur.PNG)
+
+Donc, pour que le moteur tourne à un angle défini, nous allons utilisé le mode automatique en modifiant le `pHeader` pour choisir 
+l'ID d'arbitration et nous allons choisir l'angle et le signe en modifiant le aData
 
 ### Pilotage du moteur
 
-
+D'abord, nous avons configuré le bus CAN
 
 ## TP5: Intégration I²C - Serial - REST - CAN
 
