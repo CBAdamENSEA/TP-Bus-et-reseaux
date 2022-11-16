@@ -135,16 +135,16 @@ int main(void)
 	HAL_CAN_Start(&hcan1);
 
 
-	HAL_Delay(10000);
-
-	aData[0]=0;
-	aData[1]=0;
-	pHeader.StdId= 0x62;
-	pHeader.IDE=CAN_ID_STD;
-	pHeader.RTR=CAN_RTR_DATA;
-	pHeader.DLC=0;
-	pHeader.TransmitGlobalTime=DISABLE;
-	HAL_CAN_AddTxMessage ( &hcan1, &pHeader,aData,&pTxMailbox);
+//	HAL_Delay(10000);
+//
+//	aData[0]=0;
+//	aData[1]=0;
+//	pHeader.StdId= 0x62;
+//	pHeader.IDE=CAN_ID_STD;
+//	pHeader.RTR=CAN_RTR_DATA;
+//	pHeader.DLC=0;
+//	pHeader.TransmitGlobalTime=DISABLE;
+//	HAL_CAN_AddTxMessage ( &hcan1, &pHeader,aData,&pTxMailbox);
 
 
 	aData[0]=0;
@@ -154,13 +154,9 @@ int main(void)
 	pHeader.RTR=CAN_RTR_DATA;
 	pHeader.DLC=2;
 	pHeader.TransmitGlobalTime=DISABLE;
-
-
-
-
-
-
 	HAL_CAN_AddTxMessage ( &hcan1, &pHeader,aData,&pTxMailbox);
+
+
 	HAL_TIM_Base_Start_IT(&htim7);
 
 	HAL_UARTEx_ReceiveToIdle_DMA(&huart3, RxBuffer, RX_BUFFER_SIZE);
