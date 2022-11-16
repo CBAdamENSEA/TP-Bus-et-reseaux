@@ -16,6 +16,7 @@ BMP280_S32_t Temperature_value;
 extern UART_HandleTypeDef huart3;
 extern int K;
 extern int A;
+extern BMP280_S32_t last_temp;
 
 
 void protocol(char RX_Pi_buffer[RX_BUFFER_SIZE], uint8_t Size)

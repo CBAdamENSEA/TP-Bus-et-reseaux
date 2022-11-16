@@ -76,12 +76,11 @@ int16_t dig_P6;
 int16_t dig_P7;
 int16_t dig_P8;
 int16_t dig_P9;
-int K=1234;
+int K=1000;
 int A=1257;
 uint8_t RxChar;
 uint8_t RxBuffer[RX_BUFFER_SIZE];
-int temp_to_angle=100;
-BMP280_S32_t temp_v;
+BMP280_S32_t last_temp;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -148,7 +147,7 @@ int main(void)
 	HAL_CAN_AddTxMessage ( &hcan1, &pHeader,aData,&pTxMailbox);
 
 
-	aData[0]=90;
+	aData[0]=0;
 	aData[1]=0;
 	pHeader.StdId= 0x61;
 	pHeader.IDE=CAN_ID_STD;
@@ -257,22 +256,22 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	temp_v=Read_Temp();
-	printf("T=%d\r\n",temp_v);
-	angle=(abs(temp_v-2500)/temp_to_angle)*10;
-	printf("angle=%d\r\n",angle);
-	if(temp_v>=2500)
-	{
-		aData[1]=0;
-	}
-	else
+	last_temp=Read_Temp();
+	//printf("T=%d\r\n",last_temp);
+	angle=((last_temp-2500))*K/10000;
+	//printf("angle=%d\r\n",angle);
+	if(angle>=0)
 	{
 		aData[1]=1;
 	}
-	aData[0]=angle;
+	else
+	{
+		aData[1]=0;
+	}
+	aData[0]=abs(angle);
 	if(HAL_CAN_AddTxMessage( &hcan1, &pHeader,aData,&pTxMailbox)==HAL_OK)
 	{
-		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+		//printf("Motor transmission succeded\r\n");
 	}
 }
 /* USER CODE END 4 */
