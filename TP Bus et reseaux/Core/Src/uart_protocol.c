@@ -14,6 +14,7 @@ BMP280_U32_t Pressure_value;
 BMP280_S32_t Temperature_value;
 
 extern UART_HandleTypeDef huart3;
+extern UART_HandleTypeDef huart2;
 extern int K;
 extern int A;
 extern BMP280_S32_t last_temp;
@@ -21,6 +22,7 @@ extern BMP280_S32_t last_temp;
 
 void protocol(char RX_Pi_buffer[RX_BUFFER_SIZE], uint8_t Size)
 {
+	//HAL_UART_Transmit(&huart2, RX_Pi_buffer, Size, 0xFFFF);
 	if (strncmp(RX_Pi_buffer,"GET_T",strlen("GET_T"))==0)
 	{
 		Temperature_value=Read_Temp();
