@@ -79,6 +79,7 @@ network={
  ssid="<Name of your wireless LAN>"
  psk="<Password for your wireless LAN>"
 }   
+#####
 
 
 Il faut installer pip pour python3 avec la commande `sudo apt install python3-pip` et ensuite installer le pack pyserial 
