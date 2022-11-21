@@ -42,9 +42,9 @@ Pour cela nous utilisons la fonction `BMP_Config(bmp)` qui modifiera le registre
 Après, nous effectuons le calibrage du composant : 
 La calibration se fait grace a la fonction `Calibration(calibration_data)`, cette fonction récupère les données stockées dans les registres calib00 à calib25, elle les stocke dans differents tableaux , ces données seront par la suite utilisées pour effectuer la compensation.  
 
-Nous pouvons a présent lire la valeur de la température et de la pression qui se trouvent dans les six registres suivants : 
-*temp_msb ,temp_lsb, temp_xlsb	pour la température
-*press_msb ,press_lsb, press_xlsb	pour la pression 
+Nous pouvons a présent lire la valeur de la température et de la pression qui se trouvent dans les six registres suivants: 
+* temp_msb ,temp_lsb, temp_xlsb	pour la température
+* press_msb ,press_lsb, press_xlsb	pour la pression 
 
 Nous remarquons que les valeurs que nous lisons sont des valeurs en hexadécimal de l'ordre de 0x80000 ,cela correspond a une valeur de température d'environ 25°C , cependant une derniere étape consiste a utiliser et adapter l'algorithme présent dans la documentation afin d'avoir une valeur en degrés Celsius
 
