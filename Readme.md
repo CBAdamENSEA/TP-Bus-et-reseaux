@@ -29,12 +29,12 @@ Interfacer un STM32 avec des un capteur I2C (BMP280)
 ### Capteur BMP280
  
 Le BMP280 est un capteur de pression et température développé par Bosch qui utilise un protocole de communication de type I²C
-Il dispose de differents registres qui peuvent etre modifiés ou lus afin de bien configurer le capteur , les registres utilisés sont les suivants :
-![architecture](https://github.com/CBAdamENSEA/TP-Bus-et-reseaux/blob/master/media/mapping.PNG)
+Il dispose de differents registres qui peuvent etre modifiés ou lus afin de bien configurer le capteur , les registres utilisés sont les suivants:
+![architecture](https://github.com/CBAdamENSEA/TP-Bus-et-reseaux/blob/master/media/mapping.png)
 
 Tout d'abord, on commence par l'identification du composant (ID = 0x58): 
 L'identification du composant se fait grace a la fonction`BMP_Verify_Id()`
-cette fonction nous permet de lire la valeur du registre ID se trouvant a l'adresse 0xD0 ,la valeur lue doit correspondre à 0x58 qui est l'adresse du composant  
+cette fonction nous permet de lire la valeur du registre ID se trouvant a l'adresse 0xD0 ,la valeur lue doit correspondre à 0x58 qui est l'adresse du composant.
 
 Ensuite on configure le capteur: mode normal, Pressure oversampling x16, Temperature oversampling x2: 
 Pour cela nous utilisons la fonction `BMP_Config(bmp)` qui modifiera le registre `ctrl_meas` qui se trouve a l'adresse 0xF4, les deux bits LSB nous permettent de choisir le mode , les trois bits suivant nous permettent de choisir "l'oversampling pression" et les trois bits de poid fort nous permettent de choisir "l'oversampling température"
