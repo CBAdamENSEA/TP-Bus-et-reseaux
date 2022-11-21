@@ -70,7 +70,7 @@ Tout d'abord, il faut commencer par télecharger l'image  "Raspberry Pi OS (32-b
 Par la suite nous devons configurer l'image, cela se fait en créant des fichiers ssh et wpa_supplicant.conf dans lA partition boot afin de lancer 
 automatiquement le serveur SSH sur le réseau et pour activer le port série afin d'assurer la connexion avec la STM32.
 le fichier wpa_supplicant.conf contient le code suivant:
-#####
+```
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
 country=FR
@@ -79,7 +79,7 @@ network={
  ssid="<Name of your wireless LAN>"
  psk="<Password for your wireless LAN>"
 }   
-#####
+```
 
 
 Il faut installer pip pour python3 avec la commande `sudo apt install python3-pip` et ensuite installer le pack pyserial 
