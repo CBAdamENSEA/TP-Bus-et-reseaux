@@ -93,24 +93,27 @@ La derniere étape consiste à modifier les fichier  /etc/hostname et /etc/hosts
  
 Une fois la configuration terminer, on peut commencer à écrire notre protocole de communication avec la STM32.   
 
-Pour cela on doit tous d'abord connecter la STM32 avec la Raspberry, il faut biensur croiser les fils RX et TX , et surtout ne pas oublier de relier le GND de la raspberry avec le GND de la STM32, cela peut nous faire perdre énormement de temps  
+Pour cela on doit tous d'abord connecter la STM32 avec la Raspberry, il faut biensur croiser les fils RX et TX , et surtout ne pas oublier de relier le GND de la raspberry avec le GND de la STM32, cela peut nous faire perdre énormement de temps.  
 à ce stade du TP nous nous contentons juste d'afficher les valeurs des température et de la pression en ecrivant les commandes "GET_T" et "GET_P" sur minicom, on fera la meme chose pour les autres commandes tel que "GET_K" , "SET_K", "GET_A".  
 
-Maintenant que le protocole de communication fonctionne avec minicom, il faut faire la meme chose mais cette fois ci en utilisant Python, pour cela:  
-
-
-Il faut installer pip pour python3 avec la commande `sudo apt install python3-pip` et ensuite installer le pack pyserial 
-avec la commande `pip3 install pyserial`
-
+Maintenant que le protocole de communication fonctionne avec minicom, il faut faire la meme chose mais cette fois ci en utilisant Python.
 
 
 ### Commande depuis Python
 
-On a commencé par écrire un protocole de communication UART (uart3) sur la STM32 pour gérer les demandes de la Raspberry:
+Il faut d'abord installer pip pour python3 avec la commande `sudo apt install python3-pip` puis installer le pack pyserial 
+avec la commande `pip3 install pyserial`
+
+Nous avons rencontré un probleme en ecrivant le code python, lorsqu'on utilisait minicom , on recevais via l'uart un caractere, un traitement etait effectué puis on recevait un autre caractere, l'etre humain ayant une vitesse d'ecrtire relativement faible,
+cela fonctionnait bien , cependant , lorsqu'on envoie en utilisant ser.write la vitesse de transmission est élevée,sachant que le traitement de chacuns des caracteres prend un certain temps, il arrive parfois de rater un caractere ou deux , il a donc fallu trouver une solution qui est d'utiliser 
+la fonction `HAL_UARTEx_ReceiveToIdle_DMA(&huart3, RxBuffer, RX_BUFFER_SIZE)` qui attend de tous recevoir avant d'effectuer le traitement.  
+
+Ce probleme étant resolu, nous avons ecris le protocole de communication suivant:  
 
 ![architecture](https://github.com/CBAdamENSEA/TP-Bus-et-reseaux/blob/master/media/protocole.PNG)
 
-Ensuite, Nous avons écrit un code python permettant la récupération des données de la STM32.
+Ensuite, Nous avons écrit un code python permettant la récupération des données de la STM32.  
+
 
 ## TP3: Interface REST
 
@@ -148,11 +151,12 @@ Ensuite, nous avons ajouté les méthodes POST, GET, PUT, PATCH et DELETE pour d
 ### Objectif
 
 Mise en place d'un moteur pas-à-pas sur bus CAN avec un baud rate de 500kbits/s. Le ratio seg2/(seg1+seg2) détermine 
-l'instant de décision. Il doit être aux alentours de 87%. Nous avons choisi un prescaler de ...
+l'instant de décision. Il doit être aux alentours de 87%.il faut bien le choisir car cela peut donner lieu a des erreurs de transmissions , Nous avons choisi un prescaler de ...
 
 Pour pouvoir utiliser le bus CAN de la STM32, il faut passer par un Tranceiver CAN. Ce composant a été installé sur une carte 
 fille (shield) au format Arduino pour pouvoir le connecter facilement. Ce shield possède un connecteur subd9, qui permet de 
 connecter un câble au format CAN avec le moteur.
+le RX et TX Du Tranceiver sont connectés a PB8 et PB9 de la carte nucléo, il faut donc penser à les changer pour la communication entre la STM32 et la raspberry.  
 
 Pour activer le module CAN, nous allons utiliser la fonction `HAL_CAN_Start(&hcan1)`
 
@@ -163,7 +167,10 @@ Le moteur fonctionne en 2 modes: automatique et manuel:
 ![architecture](https://github.com/CBAdamENSEA/TP-Bus-et-reseaux/blob/master/media/moteur.PNG)
 
 Donc, pour que le moteur tourne à un angle défini, nous allons utilisé le mode automatique en modifiant le `pHeader` pour choisir 
-l'ID d'arbitration et nous allons choisir l'angle et le signe en modifiant le aData
+l'ID d'arbitration et nous allons choisir l'angle et le signe en modifiant le aData, ainsi pout un angle de 90° dans le sens positif:  
+* aData[0] doit valoir 90. 
+* aData[1] doit valoir 0.
+
 
 ### Pilotage du moteur
 
