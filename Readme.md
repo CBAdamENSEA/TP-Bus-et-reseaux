@@ -67,7 +67,7 @@ Permettre l'interrogation du STM32 via un Raspberry Pi Zero
 ### Mise en route du Raspberry PI Zéro
 
 Tout d'abord, il faut commencer par télecharger l'image  "Raspberry Pi OS (32-bit) Lite" et l'installer sur la carte SD en utilisant BalenaEtcher. 
-Par la suite nous devons configurer l'image, cela se fait en créant des fichiers ssh et wpa_supplicant.conf dans lA partition boot afin de lancer 
+Par la suite nous devons configurer l'image, cela se fait en créant des fichiers ssh et wpa_supplicant.conf dans la partition boot afin de lancer 
 automatiquement le serveur SSH sur le réseau et pour activer le port série afin d'assurer la connexion avec la STM32.  
 le fichier wpa_supplicant.conf contient le code suivant:
 ```
@@ -89,10 +89,11 @@ la prochaine étape consiste à liberer le port UART en retirant l'option suivan
 
 `console=serial0,115200`
 
-La derniere étape consiste à modifier les fichier  /etc/hostname et /etc/hosts dans le partition root afin de modifier le nom de la Raspberry.  
+La derniere étape consiste à modifier les fichier  /etc/hostname et /etc/hosts dans la partition root afin de modifier le nom de la Raspberry. 
+ 
 Une fois la configuration terminer, on peut commencer à écrire notre protocole de communication avec la STM32.   
 
-Pour cela on doit tous d'abord connecter la STM32 avec la Raspberry, il faut biensur croiser les fils RX et TX , et surtout ne pas oublier de relier le GND de la raspberry avec le GND de la STM32, cela peut nous faire perdre énormement de temps 
+Pour cela on doit tous d'abord connecter la STM32 avec la Raspberry, il faut biensur croiser les fils RX et TX , et surtout ne pas oublier de relier le GND de la raspberry avec le GND de la STM32, cela peut nous faire perdre énormement de temps  
 à ce stade du TP nous nous contentons juste d'afficher les valeurs des température et de la pression en ecrivant les commandes "GET_T" et "GET_P" sur minicom, on fera la meme chose pour les autres commandes tel que "GET_K" , "SET_K", "GET_A".  
 
 Maintenant que le protocole de communication fonctionne avec minicom, il faut faire la meme chose mais cette fois ci en utilisant Python, pour cela:  
