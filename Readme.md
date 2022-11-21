@@ -33,20 +33,23 @@ Il dispose de differents registres qui peuvent etre modifiés ou lus afin de bie
 ![architecture](https://github.com/CBAdamENSEA/TP-Bus-et-reseaux/blob/master/media/mapping.png)
 
 Tout d'abord, on commence par l'identification du composant (ID = 0x58): 
+
 L'identification du composant se fait grace a la fonction`BMP_Verify_Id()`
 cette fonction nous permet de lire la valeur du registre ID se trouvant a l'adresse 0xD0 ,la valeur lue doit correspondre à 0x58 qui est l'adresse du composant.
 
 Ensuite on configure le capteur: mode normal, Pressure oversampling x16, Temperature oversampling x2: 
+
 Pour cela nous utilisons la fonction `BMP_Config(bmp)` qui modifiera le registre `ctrl_meas` qui se trouve a l'adresse 0xF4, les deux bits LSB nous permettent de choisir le mode , les trois bits suivant nous permettent de choisir "l'oversampling pression" et les trois bits de poid fort nous permettent de choisir "l'oversampling température"
 
-Après, nous effectuons le calibrage du composant : 
+Après, nous effectuons le calibrage du composant:
+ 
 La calibration se fait grace a la fonction `Calibration(calibration_data)`, cette fonction récupère les données stockées dans les registres calib00 à calib25, elle les stocke dans differents tableaux , ces données seront par la suite utilisées pour effectuer la compensation.  
 
 Nous pouvons a présent lire la valeur de la température et de la pression qui se trouvent dans les six registres suivants: 
 * temp_msb ,temp_lsb, temp_xlsb	pour la température
 * press_msb ,press_lsb, press_xlsb	pour la pression 
 
-Nous remarquons que les valeurs que nous lisons sont des valeurs en hexadécimal de l'ordre de 0x80000 ,cela correspond a une valeur de température d'environ 25°C , cependant une derniere étape consiste a utiliser et adapter l'algorithme présent dans la documentation afin d'avoir une valeur en degrés Celsius
+Nous remarquons que les valeurs que nous lisons sont des valeurs en hexadécimal de l'ordre de 0x80000 ,cela correspond a une valeur de température d'environ 25°C , cependant une derniere étape consiste a utiliser et adapter l'algorithme présent dans la documentation afin d'avoir une valeur en degrés Celsius.
 
 
 Pour cela, on écrit 2 fonctions distinctes:
