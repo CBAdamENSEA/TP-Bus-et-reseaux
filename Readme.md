@@ -80,6 +80,22 @@ network={
  psk="<Password for your wireless LAN>"
 }   
 ```
+par la suite il faut activer le port serie en modifiant le fichier config.txt de la partition boot , il faut rajouter le code suivant:  
+```
+enable_uart=1
+dtoverlay=disable-bt
+```
+la prochaine étape consiste à liberer le port UART en retirant l'option suivante dans le fichier cmdline.txt :  
+
+`console=serial0,115200`
+
+La derniere étape consiste à modifier les fichier  /etc/hostname et /etc/hosts dans le partition root afin de modifier le nom de la Raspberry.  
+Une fois la configuration terminer, on peut commencer à écrire notre protocole de communication avec la STM32.   
+
+Pour cela on doit tous d'abord connecter la STM32 avec la Raspberry, il faut biensur croiser les fils RX et TX , et surtout ne pas oublier de relier le GND de la raspberry avec le GND de la STM32, cela peut nous faire perdre énormement de temps 
+à ce stade du TP nous nous contentons juste d'afficher les valeurs des température et de la pression en ecrivant les commandes "GET_T" et "GET_P" sur minicom, on fera la meme chose pour les autres commandes tel que "GET_K" , "SET_K", "GET_A".  
+
+Maintenant que le protocole de communication fonctionne avec minicom, il faut faire la meme chose mais cette fois ci en utilisant Python, pour cela:  
 
 
 Il faut installer pip pour python3 avec la commande `sudo apt install python3-pip` et ensuite installer le pack pyserial 
