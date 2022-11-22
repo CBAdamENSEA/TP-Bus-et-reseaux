@@ -156,7 +156,7 @@ def page_not_found(error):
 
 Ensuite, nous avons ajouté les méthodes POST, GET, PUT, PATCH et DELETE pour définir les fonctions CRUD.Les fonctions ajoutées sont les suivante :  
 
-![architecture](https://github.com/CBAdamENSEA/TP-Bus-et-reseaux/blob/master/media/crud_methode.PNG)
+![architecture](https://github.com/CBAdamENSEA/TP-Bus-et-reseaux/blob/master/media/crud_methode.png)
 
 finalement, nous les avons testé grace a l'extension rested sur firefox.
 
