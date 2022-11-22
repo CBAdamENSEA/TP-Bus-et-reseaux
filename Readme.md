@@ -104,15 +104,15 @@ Maintenant que le protocole de communication fonctionne avec minicom, il faut fa
 Il faut d'abord installer pip pour python3 avec la commande `sudo apt install python3-pip` puis installer le pack pyserial 
 avec la commande `pip3 install pyserial`
 
-Nous avons rencontré un probleme en ecrivant le code python, lorsqu'on utilisait minicom , on recevais via l'uart un caractere, un traitement etait effectué puis on recevait un autre caractere, l'etre humain ayant une vitesse d'ecrtire relativement faible,
+Nous avons rencontré un probleme en ecrivant le code python, lorsqu'on utilisait minicom , on recevait via l'uart un caractere, un traitement etait effectué puis on recevait un autre caractere, l'etre humain ayant une vitesse d'ecrtire relativement faible,
 cela fonctionnait bien , cependant , lorsqu'on envoie en utilisant ser.write la vitesse de transmission est élevée,sachant que le traitement de chacuns des caracteres prend un certain temps, il arrive parfois de rater un caractere ou deux , il a donc fallu trouver une solution qui est d'utiliser 
 la fonction `HAL_UARTEx_ReceiveToIdle_DMA(&huart3, RxBuffer, RX_BUFFER_SIZE)` qui attend de tous recevoir avant d'effectuer le traitement.  
 
-Ce probleme étant resolu, nous avons ecris le protocole de communication suivant:  
+Le probleme étant resolu, nous avons ecris le protocole de communication suivant:  
 
 ![architecture](https://github.com/CBAdamENSEA/TP-Bus-et-reseaux/blob/master/media/protocole.PNG)
 
-Ensuite, Nous avons écrit un code python permettant la récupération des données de la STM32.  
+Ensuite, Nous avons écrit un code python permettant la récupération des données de la STM32, ainsi a la fin de ce TP nous avons pu afficher la température sur la raspberry en effectuant une simple demande via le programme python.    
 
 
 ## TP3: Interface REST
@@ -135,15 +135,24 @@ Il faut ensuite installer le pack flask avec la commande `pip3 install flask` qu
 
 ### Première page REST avec métodes HTTP
 
-Nous avons créé notre serveur web et nous l'avons lancé avec la commande `FLASK_APP=nom_du_programme.py FLASK_ENV=development flask run --host 0.0.0.0`
+Nous avons créé notre serveur web et nous l'avons lancé avec la commande `FLASK_APP=nom_du_programme.py FLASK_ENV=development flask run --host 0.0.0.0`   
+`--host 0.0.0.0` Afin d'eviter que notre serveur ne fonctionne qu'en loopback 
 
-La constante `FLASK_ENV=development` permet de lancer en mode debug pour permettre de tester le serveur web.
+La constante `FLASK_ENV=development` permet de lancer en mode debug pour permettre de tester le serveur web.	
 
 On choisit le format JSON pour les données car il est lisable par un homme ou une machine.
 
-Nous avons ajouté une page d'erreur 404 (html) avec la fonction `render_template('page_not_found.html')`.
+Nous avons ajouté une page d'erreur 404 (html) avec la fonction `render_template('page_not_found.html')`.  
+pour cela il faut telecharger le fichiers `page_not_found.html` et le placer dans un repertoire template 
+par la suite ajouter les lignes de code suivantes a notre `app.py`:  
+```
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('page_not_found.html'), 404
+	```
+	
 
-Ensuite, nous avons ajouté les méthodes POST, GET, PUT, PATCH et DELETE pour définir les fonctions CRUD.
+Ensuite, nous avons ajouté les méthodes POST, GET, PUT, PATCH et DELETE pour définir les fonctions CRUD. Et nous les avons testé grace a l'extension rested sur firefox 
 
 
 ## TP4: Bus CAN 
