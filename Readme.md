@@ -192,11 +192,11 @@ l'ID d'arbitration et nous allons choisir l'angle et le signe en modifiant le aD
 
 
 ### Pilotage du moteur en fonction de la température
-le but de cette partie est de faire tourner le moteur en fonction de l'evolution de la température , le coefiscient k determine l'angle de rotation pour chaque degrés celsius.   
+le but de cette partie est de faire tourner le moteur en fonction de l'evolution de la température , le coefficient k determine l'angle de rotation pour chaque degrés celsius.   
 
 Pour cela nous avons d'abord configuré le bus CAN , par la suite nous avons recuperé la temperature grace au capteur BMP280 en utilisant un timer qui genere une intéruption chaque dixieme de seconde,la temperature est donc recolter chaque dixieme de seconde.
 Nous savons que la temperature n'evolue pas de maniere significative dans la salle, elle peut varier entre 20 et 30°C, si l'on pose 1°C= 1° de rotation , on ne verra pas le moteur tourner, 
-on a donc ajouté un coefiscient de multiplication K et un offset de 25°C pour avoir la position 0° du moteur à 25°C , le coefiscient peut etre modifier par la suite en utilisant l'interface REST, ainsi pour K=10 chaque evolution d'un degrés correspond à
+on a donc ajouté un coefiscient de multiplication K et un offset de 25°C pour avoir la position 0° du moteur à 25°C , le coefficient peut etre modifier par la suite en utilisant l'interface REST, ainsi pour K=10 chaque evolution d'un degrés correspond à
 un angle de rotation de 10 degrés. Nous avons verifier cela de maniere experimentale grace au graduations du moteur pas-à-pas.
 
 
@@ -207,6 +207,16 @@ l'objectif de ce TP est d'assembler le travail effectué lors des quatre TP pré
 A ce stade, la raspberry interroge la STM32 qui lui fournie les données du capteurs, En conséquence la STM32 pilote le moteur pas-à-pas proportionnellement
 à la temperature, il faut à present implementer les fonctions suivantes sur l'API REST:  
 ![architecture](https://github.com/CBAdamENSEA/TP-Bus-et-reseaux/blob/master/media/crud.png)
+afin de realiser cela nous nous sommes aidé du TP3, tous d'abord nous avons créé l'url de Temperature grace a la fonction `@app.route('/temp/', methods=['GET', 'POST'])`
+dans laquelle nous avons aussi définie les deux methode possible pour cette derniere `GET` et `POST`, puis par la suite nous avons défini les deux methodes dans `def api_temp():`
+l'objet retourné lorsqu'on fait appel à la methode `GET` est un json dans lequel on trouve la température, l'unité ainsi que le timestamp, nous stockons par la suite 
+cet objet json dans une liste de json pour avoir à terme une liste de toutes les températures relevées à chaque `GET` temperature , nous faisons la meme chose pour la pression. 
+Concernant le coefficient K avons proceder de la meme maniere en utilisants `@app.route('/scale/<int:K>', methods=['POST'])` mais dans ce cas la seule methode possible est un `POST`
+qui permet de modifier la valeur du coefficient K.  
+
+pour vérfier le bon fonctionnement de l'ensemble, il suffit d'utiliser l'extension REST de Firefox dans laquelle on effectue dans un premier temps un GET de la temperature, de la pression
+on peut aussi changer la valeur du coefficient K en utilisant la méthode `POST` et ainsi nous pouvons voir que suivant la valeur de K le moteur tourne plus ou moin rapidement. 
+
 ## Implémentation 
 
 
