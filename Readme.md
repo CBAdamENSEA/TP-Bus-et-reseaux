@@ -195,19 +195,18 @@ l'ID d'arbitration et nous allons choisir l'angle et le signe en modifiant le aD
 le but de cette partie est de faire tourner le moteur en fonction de l'evolution de la température , le coefiscient k determine l'angle de rotation pour chaque degrés celsius.   
 
 Pour cela nous avons d'abord configuré le bus CAN , par la suite nous avons recuperé la temperature grace au capteur BMP280 en utilisant un timer qui genere une intéruption chaque dixieme de seconde,la temperature est donc recolter chaque dixieme de seconde.
-Nous savons que la temperature n'evolue pas de maniere significative dans la salle, elle peut varier entre 20 et 30°C, si l'on pose 1°C= 1° de rotation , on ne verra pas le moteur tourner,
-on a donc ajouté un coefiscient de multiplication K et un offset de 25°C pour avoir la position 0° du moteur à 25°C , le coefiscient peut etre modifier par la suite en utilisant l'interface REST,ainsi pour K=10 chaque evolution d'un degrés correspond à
-un angle de rotation de 10 degrés. Nous avons verifier cela de maniere experimentale grace au graduations du moteur pas-à-pas
+Nous savons que la temperature n'evolue pas de maniere significative dans la salle, elle peut varier entre 20 et 30°C, si l'on pose 1°C= 1° de rotation , on ne verra pas le moteur tourner, 
+on a donc ajouté un coefiscient de multiplication K et un offset de 25°C pour avoir la position 0° du moteur à 25°C , le coefiscient peut etre modifier par la suite en utilisant l'interface REST, ainsi pour K=10 chaque evolution d'un degrés correspond à
+un angle de rotation de 10 degrés. Nous avons verifier cela de maniere experimentale grace au graduations du moteur pas-à-pas.
 
 
 ## TP5: Intégration I²C - Serial - REST - CAN
 
 ### Objectif
-l'objectif de ce TP est de po
-
-
-
-
+l'objectif de ce TP est d'assembler le travail effectué lors des quatre TP précedent et de faire fonctionner le tous.  
+A ce stade, la raspberry interroge la STM32 qui lui fournie les données du capteurs, En conséquence la STM32 pilote le moteur pas-à-pas proportionnellement
+à la temperature, il faut à present implementer les fonctions suivantes sur l'API REST:  
+![architecture](https://github.com/CBAdamENSEA/TP-Bus-et-reseaux/blob/master/media/crud.png)
 ## Implémentation 
 
 
