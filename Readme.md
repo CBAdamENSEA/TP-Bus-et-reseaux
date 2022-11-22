@@ -149,10 +149,16 @@ par la suite ajouter les lignes de code suivantes a notre `app.py`:
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('page_not_found.html'), 404
-	```
 	
+```  
 
-Ensuite, nous avons ajouté les méthodes POST, GET, PUT, PATCH et DELETE pour définir les fonctions CRUD. Et nous les avons testé grace a l'extension rested sur firefox 
+	
+sz
+Ensuite, nous avons ajouté les méthodes POST, GET, PUT, PATCH et DELETE pour définir les fonctions CRUD.Les fonctions ajoutées sont les suivante :  
+
+![architecture](https://github.com/CBAdamENSEA/TP-Bus-et-reseaux/blob/master/media/crud_methode.PNG)
+
+finalement, nous les avons testé grace a l'extension rested sur firefox.
 
 
 ## TP4: Bus CAN 
