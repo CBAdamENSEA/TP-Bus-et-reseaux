@@ -158,7 +158,11 @@ Ensuite, nous avons ajouté les méthodes POST, GET, PUT, PATCH et DELETE pour d
 
 ![architecture](https://github.com/CBAdamENSEA/TP-Bus-et-reseaux/blob/master/media/crud_methode.png)
 
-finalement, nous les avons testé grace a l'extension rested sur firefox.
+finalement, nous les avons testé grace a l'extension rested sur firefox. dans laquelle il faut donner l'adresse ip de la raspberry, mais aussi le chemin comme on peut le voir sur l'exemple suivant:   
+![architecture](https://github.com/CBAdamENSEA/TP-Bus-et-reseaux/blob/master/media/rested.png)
+
+Le resultats d'une telle requete doit correspondre a la lettre L car nous avons choisi l'index 3 qui correspond a la troisieme lettre du message que nous retournant ("welcome")  
+
 
 
 ## TP4: Bus CAN 
