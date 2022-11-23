@@ -170,7 +170,7 @@ Le resultats d'une telle requete doit correspondre a la lettre L car nous avons 
 ### Objectif
 
 Mise en place d'un moteur pas-à-pas sur bus CAN avec un baud rate de 500kbits/s. Le ratio seg2/(seg1+seg2) détermine 
-l'instant de décision. Il doit être aux alentours de 87%.il faut bien le choisir car cela peut donner lieu a des erreurs de transmissions , Nous avons choisi un prescaler de ...
+l'instant de décision. Il doit être aux alentours de 87%.il faut bien le choisir car cela peut donner lieu a des erreurs de transmissions , Nous avons choisi un prescaler de 21 et seg1 de 2 times et seg2 de 1 time
 
 Pour pouvoir utiliser le bus CAN de la STM32, il faut passer par un Tranceiver CAN. Ce composant a été installé sur une carte 
 fille (shield) au format Arduino pour pouvoir le connecter facilement. Ce shield possède un connecteur subd9, qui permet de 
